@@ -11,4 +11,12 @@ public class WebSocketSecurityConfiguration extends AbstractSecurityWebSocketMes
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages.anyMessage().hasRole("WS_USER");
     }
+
+    /**
+     * Disables CSRF for Websockets.
+     */
+    @Override
+    protected boolean sameOriginDisabled() {
+        return true;
+    }
 }

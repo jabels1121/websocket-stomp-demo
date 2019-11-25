@@ -1,5 +1,6 @@
 package com.jaybe.websocketstompserverdemo.configurations;
 
+import com.jaybe.websocketstompserverdemo.interceprots.StompWebSocketHandshakeHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -11,23 +12,21 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import org.springframework.web.socket.server.HandshakeFailureException;
 import org.springframework.web.socket.server.HandshakeHandler;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    private final StompWebSocketHandshakeHandler stompWebSocketHandshakeHandler;
+
+    public WebSocketConfig(StompWebSocketHandshakeHandler stompWebSocketHandshakeHandler) {
+        this.stompWebSocketHandshakeHandler = stompWebSocketHandshakeHandler;
+    }
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-demo").setHandshakeHandler((request, response, wsHandler, attributes) -> {
-            HttpServletRequest req = (HttpServletRequest) request;
-            var session = req.getSession();
-            System.out.println(session.getId());
-
-
-            return false;
-        }).withSockJS(); // HTTP handshake endpoint
+        registry.addEndpoint("/ws-demo").setAllowedOrigins("*").withSockJS(); // HTTP handshake endpoint
     }
 
     @Override
